@@ -59,6 +59,7 @@
         
         <route>
             <from uri="timer:foo?period=1s" />
+            <from uri="activemq:queue:timer" />
             <transform>
                 <simple>Heartbeat1 ${date:now:yyyy-MM-dd HH:mm:ss}</simple>
             </transform>
