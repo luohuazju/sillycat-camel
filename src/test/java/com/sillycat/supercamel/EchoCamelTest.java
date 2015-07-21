@@ -21,7 +21,7 @@ public class EchoCamelTest extends BaseTest {
 			for (int i = 0; i < 5; i++) {
 				template.sendBody("activemq:queue:start", "body" + i);
 			}
-			Thread.sleep(1000);
+			Thread.sleep(4000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

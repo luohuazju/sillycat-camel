@@ -47,6 +47,8 @@
         <property name="connectionFactory" ref="pooledConnectionFactory" />
     </bean>
     
+    <bean id="beanProcessor" class="com.sillycat.supercamel.BeanProcessor"/>
+    
 	<camelContext xmlns="http://camel.apache.org/schema/spring">
 		<endpoint id="testBeanUriHelloMethod" uri="bean:testBean?method=hello"/>
         <route>
@@ -54,6 +56,27 @@
             <to ref="testBeanUriHelloMethod" />
             <to uri="stream:out" />
         </route>     
+        
+        <route>
+            <from uri="timer:foo?period=1s" />
+            <transform>
+                <simple>Heartbeat1 ${date:now:yyyy-MM-dd HH:mm:ss}</simple>
+            </transform>
+            <to uri="bean:testBean?method=hello" />
+            <to uri="activemq:queue:in" />
+        </route>
+        <route>
+            <from uri="activemq:queue:in" />
+            <log message="Route message from inbox to outbox queue with data ${body}" />
+            <to uri="stream:out" />
+        </route>
+        
+        <route>
+            <from uri="timer:foo?period=1s" />           
+            <process ref="beanProcessor"/>
+            <to uri="stream:out" />
+        </route>
+        
     </camelContext>
 	
 

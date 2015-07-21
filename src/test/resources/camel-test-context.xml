@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/aop 
+			http://www.springframework.org/schema/aop/spring-aop.xsd  
+           	http://www.springframework.org/schema/tx 
+           	http://www.springframework.org/schema/tx/spring-tx.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context.xsd
+			http://camel.apache.org/schema/spring 
+			http://camel.apache.org/schema/spring/camel-spring.xsd
+			">
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>
+					classpath*:config.properties
+				</value>
+			</list>
+		</property>
+	</bean>
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.sillycat">
+	</context:component-scan>
+
+	<camelContext xmlns="http://camel.apache.org/schema/spring">
+		<!-- define a producer template -->
+		<template id="producer" />
+		<!-- define a consumer template -->
+		<consumerTemplate id="consumer" />
+		<route>
+			<from uri="seda:foo" />
+			<to id="result" uri="mock:result" />
+		</route>
+	</camelContext>
+
+</beans>
+
+
+
