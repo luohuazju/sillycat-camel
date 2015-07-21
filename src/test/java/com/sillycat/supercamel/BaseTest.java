@@ -13,7 +13,6 @@ public abstract class BaseTest {
 
 	protected final Log log = LogFactory.getLog(this.getClass());
 
-
 	@Before
 	public void setUp() {
 		

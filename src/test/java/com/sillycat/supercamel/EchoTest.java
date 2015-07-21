@@ -14,7 +14,7 @@ public class EchoTest extends BaseTest{
     private TestBean testBean;  
 	
 	@Test
-	public void mentionsOnly(){
+	public void echo(){
 		Assert.assertEquals(testBean.hello("Carl"),"Howdy,Carl");
 	}
 	

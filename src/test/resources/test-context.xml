@@ -12,6 +12,8 @@
            	http://www.springframework.org/schema/tx/spring-tx.xsd
 			http://www.springframework.org/schema/context
 			http://www.springframework.org/schema/context/spring-context.xsd
+			http://camel.apache.org/schema/spring 
+			http://camel.apache.org/schema/spring/camel-spring.xsd
 			">
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -32,6 +34,28 @@
 
 	<!--  my lovely spring, long time no see  -->
 	<bean id="testBean" class="com.sillycat.supercamel.TestBeanImpl"/>
+	
+	<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="vm://localhost?broker.persistent=false" />
+    </bean>
+    <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+        init-method="start" destroy-method="stop">
+        <property name="maxConnections" value="8" />
+        <property name="connectionFactory" ref="jmsConnectionFactory" />
+    </bean>
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="pooledConnectionFactory" />
+    </bean>
+    
+	<camelContext xmlns="http://camel.apache.org/schema/spring">
+		<endpoint id="testBeanUriHelloMethod" uri="bean:testBean?method=hello"/>
+        <route>
+            <from uri="activemq:queue:start" />
+            <to ref="testBeanUriHelloMethod" />
+            <to uri="stream:out" />
+        </route>     
+    </camelContext>
+	
 
 </beans>
 
